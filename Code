@@ -1,0 +1,83 @@
+#include <LiquidCrystal.h>
+const int rs = 2, en = 3, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+#include <Servo.h>
+Servo myservo;
+int ms=A0;
+int mot=9;
+int mot1=11;
+int l1=A1;
+int l2=A2;
+int l3=A3;
+int kk=0;
+void setup() {
+lcd.begin(16,2);
+lcd.print(" WELCOME");
+Serial.begin(9600);
+myservo.attach(10);
+pinMode(mot,OUTPUT);
+pinMode(mot1,OUTPUT);
+pinMode(ms,INPUT);
+}
+void loop()
+{
+int mval=analogRead(ms);
+int lv1=analogRead(l1)/10;
+int lv2=analogRead(l2)/10;
+int lv3=analogRead(l3)/10;
+Serial.println("L1:");
+Serial.println(lv1);
+Serial.println("L2:");
+Serial.println(lv2);
+Serial.println("L3:");
+Serial.println(lv3);
+delay(1000);
+lcd.clear();
+lcd.setCursor(0,0);
+lcd.print("L1:");
+lcd.setCursor(3,0);
+lcd.print(lv1);
+lcd.setCursor(8,0);
+lcd.print("L2:");
+lcd.setCursor(11,0);
+lcd.print(lv2);
+lcd.setCursor(0,1);
+lcd.print("L3:");
+lcd.setCursor(3,1);
+lcd.print(lv3);
+lcd.setCursor(8,1);
+lcd.print("M:");
+lcd.setCursor(10,1);
+lcd.print(mval);
+if(mval<500)
+{
+digitalWrite(mot,0);
+digitalWrite(mot1,0);
+}
+else
+{
+digitalWrite(mot,1);
+digitalWrite(mot1,0);
+}
+if(lv1>70 && kk==0)
+{
+kk=1;
+myservo.write(40);
+}
+if(lv2>70 && kk==1)
+{
+kk=2;
+myservo.write(70);
+}
+if(lv3>70 && kk==2)
+{
+kk=3;
+myservo.write(100);
+}
+if(lv1<70 && lv2<70 && lv3<70 && kk==3)
+{
+kk=0;
+myservo.write(30);
+}
+delay(500);
+}
